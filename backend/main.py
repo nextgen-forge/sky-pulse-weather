@@ -4,8 +4,12 @@ from .database import SessionLocal, engine
 from . import models
 from . import weather_service
 from . import schemas
+import logging
 
-models.Base.metadata.create_all(bind=engine)
+try:
+    models.Base.metadata.create_all(bind=engine)
+except Exception as e:
+    logging.error(f"Failed to initialize database: {e}")
 
 app = FastAPI(title="Weather Forecast API", version="1.0.0")
 
@@ -27,9 +31,14 @@ def get_weather(city: str):
         if not data:
             raise HTTPException(status_code=404, detail=f"City '{city}' not found.")
         
-        record = models.SearchHistory(city=data["city"], temp=data["temp"], description=data["description"])
-        db.add(record)
-        db.commit()
+        try:
+            record = models.SearchHistory(city=data["city"], temp=data["temp"], description=data["description"])
+            db.add(record)
+            db.commit()
+        except Exception as e:
+            logging.error(f"History disabled: {e}")
+            db.rollback()
+            
         return data
     except ValueError as e:
         raise HTTPException(status_code=500, detail=str(e))
