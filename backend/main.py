@@ -1,12 +1,9 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
 from .database import SessionLocal, engine
 from . import models
 from . import weather_service
 from . import schemas
-import os
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -19,15 +16,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Serve frontend static files
-# Use absolute path to avoid issues with current working directory
-current_dir = os.path.dirname(os.path.abspath(__file__))
-frontend_path = os.path.abspath(os.path.join(current_dir, "..", "frontend"))
-app.mount("/static", StaticFiles(directory=frontend_path), name="static")
-
-@app.get("/")
-def read_root():
-    return FileResponse(os.path.join(frontend_path, "index.html"))
+# Skip serving frontend from backend in Vercel.
+# Vercel's vercel.json handles routing for /static and / (index.html).
 
 @app.get("/weather/{city}", response_model=schemas.WeatherResponse)
 def get_weather(city: str):

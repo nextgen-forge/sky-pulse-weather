@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkyPulse — Weather Forecast</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@200;400;600;800&display=swap"
+    rel="stylesheet">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌤</text></svg>" />
+  <link rel="stylesheet" href="/static/style.css?v=1.0.1" />
+  <style>
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Animated background -->
+  <div class="bg-animation">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <span class="logo-icon">⛅</span>
+      <span class="logo-text">SkyPulse</span>
+    </div>
+    <div class="header-right">
+      <button class="unit-toggle" id="unitToggle" onclick="toggleUnit()">°C / °F</button>
+      <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">
+        <span id="themeIcon">☀️</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Search Section -->
+  <main>
+    <section class="hero">
+      <h1>Discover the weather<br /><span class="gradient-text">Anywhere on Earth</span></h1>
+      <div class="search-wrapper">
+        <div class="search-box" id="searchBox">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="cityInput" placeholder="Search a city… e.g. Hyderabad, Tokyo" autocomplete="off"
+            onkeydown="if(event.key==='Enter') search()" />
+          <button class="search-btn" onclick="search()">Search</button>
+        </div>
+        <button class="geo-btn" onclick="geoLocate()" title="Use my location">📍 My location</button>
+      </div>
+      <div id="errorBox" class="error-box hidden"></div>
+    </section>
+
+    <!-- Loading spinner -->
+    <div id="loader" class="loader hidden">
+      <div class="spinner"></div>
+      <p>Fetching weather data…</p>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="results hidden">
+
+      <!-- Current weather card -->
+      <section class="current-card" id="currentCard">
+        <div class="current-left">
+          <div class="city-name" id="cityName">—</div>
+          <div class="city-country" id="cityCountry">—</div>
+          <div class="temp-display">
+            <img id="weatherIcon" src="" alt="weather icon" class="weather-icon-lg" />
+            <span class="temp-big" id="tempBig">—</span>
+          </div>
+          <div class="description" id="description">—</div>
+        </div>
+        <div class="current-right">
+          <div class="stat-grid">
+            <div class="stat-item">
+              <span class="stat-icon">🌡️</span>
+              <span class="stat-label">Feels like</span>
+              <span class="stat-val" id="feelsLike">—</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-icon">💧</span>
+              <span class="stat-label">Humidity</span>
+              <span class="stat-val" id="humidity">—</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-icon">🌬️</span>
+              <span class="stat-label">Wind</span>
+              <span class="stat-val" id="wind">—</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-icon">🌅</span>
+              <span class="stat-label">Sunrise</span>
+              <span class="stat-val" id="sunrise">—</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-icon">🌇</span>
+              <span class="stat-label">Sunset</span>
+              <span class="stat-val" id="sunset">—</span>
+            </div>
+            <div class="stat-item share-item">
+              <button class="share-btn" onclick="shareWeather()">🔗 Share</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7-Day Forecast -->
+      <section class="forecast-section">
+        <h2 class="section-title">7-Day Forecast</h2>
+        <div class="forecast-grid" id="forecastGrid"></div>
+      </section>
+
+      <!-- Search History -->
+      <section class="history-section">
+        <div class="history-header">
+          <h2 class="section-title">Recent searches</h2>
+          <button class="clear-btn" onclick="clearHistory()">✕ Clear</button>
+        </div>
+        <div class="history-list" id="historyList"></div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    <p>Data by OpenWeatherMap · Built for Excellence with FastAPI</p>
+  </footer>
+
+  <script src="/static/app.js?v=1.0.1"></script>
+</body>
+
+</html>
